@@ -1,0 +1,8 @@
+upstream <%= upstream_name %> {
+<% if sticky_session == true -%>	sticky<% if @sticky_session_name %> name=<%= sticky_session_name %><% end -%><% if @sticky_session_domain %> domain=<%= sticky_session_domain %><% end -%><% if @sticky_session_path %> path=<%= sticky_session_path %><% end -%><% if @sticky_session_expires %> expires=<%= sticky_session_expires %><% end -%>;<% end -%>
+<% members.each do |i| %>
+	server <%= i %>;<% end %>
+<% if @members_check %><% members_check.each do |i| %>
+        <%= i %>;<% end %><% end %>
+<%= additional_configuration %>
+}

@@ -1,0 +1,7 @@
+	
+	location <%= location %> {
+		alias	<%= location_alias %>;
+<% if @options -%><% options.each do |hash| -%><% hash.keys.each do |key| -%>
+                <%= key %> <%= hash[key] %>;
+<% end -%><% end -%><% end -%>
+	}
