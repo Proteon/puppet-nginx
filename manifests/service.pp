@@ -1,4 +1,5 @@
 # Helper class to define Nginx's service
+# TODO: this is for internal use only?
 class nginx::service {
     service { 'nginx':
         ensure      => running,

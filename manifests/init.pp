@@ -1,4 +1,6 @@
 # Base Nginx class
+# TODO add parameter docs
+# TODO add usage examples
 class nginx (
     $nginx_user              = 'www-data',
     $worker_processes        = '1',

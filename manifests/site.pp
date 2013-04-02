@@ -2,6 +2,8 @@
 # Default usage when using 1 servername/alias is to set the resource name to
 # the domainname. If more domainnames are required then explicitly pass a
 # complete list as the parameter 'server_name'.
+# TODO add parameter docs
+# TODO add usage examples
 define nginx::site (
     $ensure             = present,
     $server_names        = [$name],

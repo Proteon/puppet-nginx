@@ -3,6 +3,8 @@
 # $proxy, $location_alias, $www_root
 # and the exact function of $options depends on which of these parameters is
 # defined if any.
+# TODO add parameter docs
+# TODO add usage examples
 define nginx::location (
     $site_name, # site name (not necessarily a domain name)
     $location,
