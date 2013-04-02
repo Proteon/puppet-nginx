@@ -1,6 +1,6 @@
 name 'proteon-nginx'
 version '0.1.2'
-source 'git://github.com/Proteon/puppet-nginx.git'
+source 'git://github.com/proteon/puppet-nginx.git'
 author 'Proteon'
 license 'Apache License, Version 2.0'
 summary 'Nginx module'
