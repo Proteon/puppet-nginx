@@ -8,4 +8,4 @@ description 'Puppet code for deploying and configuring Nginx on Debian-like serv
 project_page 'http://github.com/Proteon/puppet-nginx'
 
 dependency 'ripienaar-concat', '>= 0.2.0'
-dependency 'puppetlabs/stdlib', '>= 3.2.0'
+dependency 'puppetlabs-stdlib', '>= 3.2.0'
