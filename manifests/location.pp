@@ -3,7 +3,7 @@
 # $proxy, $location_alias, $www_root
 # and the exact function of $options depends on which of these parameters is
 # defined if any.
-define proteon-nginx::location (
+define nginx::location (
     $site_name, # site name (not necessarily a domain name)
     $location,
     $location_alias         = undef,
@@ -17,13 +17,13 @@ define proteon-nginx::location (
     $concat_order           = '01',
 ) {
     if ($proxy != undef) {
-        $content = template('proteon-nginx/vhost_location_proxy.erb')
+        $content = template('nginx/vhost_location_proxy.erb')
     } elsif ($location_alias != undef) {
-        $content = template('proteon-nginx/vhost_location_alias.erb')
+        $content = template('nginx/vhost_location_alias.erb')
     } elsif ($www_root != undef) {
-        $content = template('proteon-nginx/vhost_location_directory.erb')
+        $content = template('nginx/vhost_location_directory.erb')
     } else {
-        $content = template('proteon-nginx/vhost_location.erb')
+        $content = template('nginx/vhost_location.erb')
     }
 
     concat::fragment { "nginx location ${name} for ${site_name}":

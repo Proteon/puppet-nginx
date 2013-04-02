@@ -1,5 +1,5 @@
 # Base Nginx class
-class proteon-nginx (
+class nginx (
     $nginx_user              = 'www-data',
     $worker_processes        = '1',
     $worker_connections      = '1024',
@@ -29,8 +29,8 @@ class proteon-nginx (
     }
 
     # Service
-    class { 'proteon-nginx::service':
-        require => Class['proteon-nginx']
+    class { 'nginx::service':
+        require => Class['nginx']
     }
 
     # Some default directory's
@@ -49,13 +49,13 @@ class proteon-nginx (
         owner   => 'root',
         group   => 'root',
         mode    => '0755',
-        source  => 'puppet:///modules/proteon-nginx/nginx.logrotate',
+        source  => 'puppet:///modules/nginx/nginx.logrotate',
         require => Package['logrotate'],
     }
 
     # Main Configuration
     file { '/etc/nginx/nginx.conf':
-        content => template('proteon-nginx/nginx.conf.erb'),
+        content => template('nginx/nginx.conf.erb'),
         notify  => Service['nginx'],
     }
 

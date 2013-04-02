@@ -2,7 +2,7 @@
 # Default usage when using 1 servername/alias is to set the resource name to
 # the domainname. If more domainnames are required then explicitly pass a
 # complete list as the parameter 'server_name'.
-define proteon-nginx::site (
+define nginx::site (
     $ensure             = present,
     $server_names        = [$name],
     $listen_ip          = '*',
@@ -16,11 +16,13 @@ define proteon-nginx::site (
     $ssl_redirect_port  = '80',
     $default_location   = true,
 ) {
+
+    
     # General variables
     $siteroot = "/opt/www/sites/${name}"
     $sslroot = '/opt/ssl'
 
-    include proteon-nginx
+    include nginx
 
     # SSL
     if ($ssl == true) {
@@ -71,26 +73,26 @@ define proteon-nginx::site (
             owner   => 'root',
             group   => 'www-data',
             mode    => '2755',
-            require => Class['proteon-nginx'],
+            require => Class['nginx'],
         }
     }
 
     # Create a concat file for the vhosts configuration
     concat { "/etc/nginx/sites-available/${name}.conf":
         notify  => Exec['nginx-reload'],
-        require => Class['proteon-nginx'],
+        require => Class['nginx'],
     }
 
     concat::fragment { "nginx_${name}_header":
         target  => "/etc/nginx/sites-available/${name}.conf",
         order   => '00',
-        content => template('proteon-nginx/vhost_header.erb'),
+        content => template('nginx/vhost_header.erb'),
     }
 
     concat::fragment { "nginx_${name}_footer":
         target  => "/etc/nginx/sites-available/${name}.conf",
         order   => '99',
-        content => template('proteon-nginx/vhost_footer.erb'),
+        content => template('nginx/vhost_footer.erb'),
     }
 
     # Define a default location
@@ -99,7 +101,7 @@ define proteon-nginx::site (
             site_name   => $name,
             location    => '/',
             www_root    => "${siteroot}/htdocs",
-            require     => Class['proteon-nginx'],
+            require     => Class['nginx'],
         }
     }
 }

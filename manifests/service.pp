@@ -1,5 +1,5 @@
 # Helper class to define Nginx's service
-class proteon-nginx::service {
+class nginx::service {
     service { 'nginx':
         ensure      => running,
         enable      => true,
