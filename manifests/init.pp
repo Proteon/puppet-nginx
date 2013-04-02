@@ -30,9 +30,10 @@ class nginx (
 
     # Service
     class { 'nginx::service':
-        require => Class['nginx']
+        require => Class['nginx'],
     }
 
+    # TODO: put all parameters in an nginx::params class
     # Some default directory's
     file { [
         '/etc/nginx/conf.d',
@@ -61,10 +62,9 @@ class nginx (
 
     # Delete some default configuration files
     file {
-        '/etc/nginx/conf.d/default.conf':
-            ensure  => absent;
-        '/etc/nginx/conf.d/example_ssl.conf':
-            ensure  => absent;
+        [ '/etc/nginx/conf.d/default.conf',
+          '/etc/nginx/conf.d/example_ssl.conf']:
+            ensure  => absent,
     }
 
 }
