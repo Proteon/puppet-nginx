@@ -79,6 +79,8 @@ define nginx::site (
         }
     }
 
+    include concat::setup
+    
     # Create a concat file for the vhosts configuration
     concat { "/etc/nginx/sites-available/${name}.conf":
         notify  => Exec['nginx-reload'],
