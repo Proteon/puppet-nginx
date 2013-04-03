@@ -1,11 +1,11 @@
 name 'proteon-nginx'
-version '0.1.2'
-source 'git://github.com/Proteon/puppet-nginx.git'
+version '0.1.3'
+
 author 'Proteon'
 license 'Apache License, Version 2.0'
+project_page 'http://github.com/Proteon/puppet-nginx'
+source 'git://github.com/Proteon/puppet-nginx.git'
 summary 'Nginx module'
 description 'Puppet code for deploying and configuring Nginx on Debian-like servers'
-project_page 'http://github.com/Proteon/puppet-nginx'
-
-dependency 'ripienaar/concat', '>= 0.2.0'
-dependency 'puppetlabs/stdlib', '>= 3.2.0'
+dependency 'ripienaar/concat', '>=0.2.0'
+dependency 'puppetlabs/stdlib', '>=3.2.0'

@@ -1,0 +1,38 @@
+{
+  "name": "proteon-nginx",
+  "author": "Proteon",
+  "description": "Puppet code for deploying and configuring Nginx on Debian-like servers",
+  "license": "Apache License, Version 2.0",
+  "project_page": "http://github.com/Proteon/puppet-nginx",
+  "source": "git://github.com/Proteon/puppet-nginx.git",
+  "summary": "Nginx module",
+  "version": "0.1.3",
+  "checksums": {
+    "LICENSE": "93b54defd87b5b252e3f0b345240ad8d",
+    "Modulefile": "5665c565d9aaff73167ba3f60cbd17eb",
+    "README.md": "8ff1c1a95edd7dcefe457800153dfb3b",
+    "files/nginx.logrotate": "f9673e6512a10494d204ddd1762053a9",
+    "manifests/init.pp": "384cc1fefa72bcd7466c260197603329",
+    "manifests/location.pp": "3c52b1e9ac241d1a226abb8e813ce5e4",
+    "manifests/service.pp": "f94d81f55caadf7a06ee042ea61fc883",
+    "manifests/site.pp": "7bb2d98c77251b5e48bbefa5341daeae",
+    "templates/nginx.conf.erb": "e8b51c6f5421df8461af445157655d6d",
+    "templates/upstream.erb": "496947636327d5822de80e4df5e69580",
+    "templates/vhost_footer.erb": "16732201014f2770fda70c6b4c2fdcb1",
+    "templates/vhost_header.erb": "7018a11a618a0cced98bd57f904d98ef",
+    "templates/vhost_location.erb": "ccb3787f380031531281f238ac19d33b",
+    "templates/vhost_location_alias.erb": "365e8f95b7553e9efbe31aa806971e1a",
+    "templates/vhost_location_directory.erb": "1950fcdbafe6c732aef2a6eab7fb7851",
+    "templates/vhost_location_proxy.erb": "13bc442143e4ac09064a08eda3c407d0"
+  },
+  "dependencies": [
+    {
+      "name": "ripienaar/concat",
+      "version_requirement": "\u003e\u003d0.2.0"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": "\u003e\u003d3.2.0"
+    }
+  ]
+}

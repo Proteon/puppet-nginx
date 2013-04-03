@@ -11,6 +11,7 @@ class nginx (
     $additional_config       = '',
     $version                 = held,
 ) {
+    
     # General
     File {
         owner   => 'root',
