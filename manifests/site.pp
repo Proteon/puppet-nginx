@@ -6,7 +6,7 @@
 # TODO add usage examples
 define nginx::site (
     $ensure             = present,
-    $server_names        = [$name],
+    $server_names       = [$name],
     $listen_ip          = '*',
     $listen_port        = '80',
     $listen_options     = undef,

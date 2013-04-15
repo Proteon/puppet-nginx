@@ -2,7 +2,7 @@
 <% if (ssl == true) and (ssl_redirect == true) %>
 server {
 	listen          <%= listen_ip %>:<%= ssl_redirect_port %> <% if @listen_options %><%= listen_options %><% end %>;
-	server_name     <%= server_name.join(" ") %>;
+	server_name     <%= server_names.join(" ") %>;
 	
 	rewrite ^ https://$server_name$request_uri? redirect;
 }
