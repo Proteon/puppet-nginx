@@ -5,24 +5,21 @@
 # TODO add parameter docs
 # TODO add usage examples
 define nginx::site (
-    $ensure             = present,
-    $server_names       = [$name],
-    $listen_ip          = '*',
-    $listen_port        = '80',
-    $listen_options     = undef,
-    $log_format         = 'main',
-    $ssl                = false,
-    $ssl_cert           = undef,
-    $ssl_key            = undef,
-    $ssl_redirect       = false,
-    $ssl_redirect_port  = '80',
-    $default_location   = true,
-) {
-
-    
+    $ensure            = present,
+    $server_names      = [$name],
+    $listen_ip         = '*',
+    $listen_port       = '80',
+    $listen_options    = undef,
+    $log_format        = 'main',
+    $ssl               = false,
+    $ssl_cert          = undef,
+    $ssl_key           = undef,
+    $ssl_redirect      = false,
+    $ssl_redirect_port = '80',
+    $default_location  = true,) {
     # General variables
     $siteroot = "/opt/www/sites/${name}"
-    $sslroot = '/opt/ssl'
+    $sslroot  = '/opt/ssl'
 
     include nginx
 
@@ -30,10 +27,10 @@ define nginx::site (
     if ($ssl == true) {
         if !defined(File[$sslroot]) {
             file { $sslroot:
-                ensure  => directory,
-                owner   => 'root',
-                group   => 'www-data',
-                mode    => '2755',
+                ensure => directory,
+                owner  => 'root',
+                group  => 'www-data',
+                mode   => '2755',
             }
         }
 
@@ -65,7 +62,9 @@ define nginx::site (
     file { "/etc/nginx/sites-enabled/${name}.conf":
         ensure  => 'link',
         target  => "/etc/nginx/sites-available/${name}.conf",
-        require => File["/etc/nginx/sites-available/${name}.conf"],
+        require => [File["/etc/nginx/sites-available/${name}.conf"], File[$siteroot], File["${siteroot}/htdocs"], File["${siteroot}/logs"
+                ]],
+        notify  => Exec['nginx-reload'],
     }
 
     # Create vhost directory for htdocs and logs
@@ -80,7 +79,7 @@ define nginx::site (
     }
 
     include concat::setup
-    
+
     # Create a concat file for the vhosts configuration
     concat { "/etc/nginx/sites-available/${name}.conf":
         notify  => Exec['nginx-reload'],
@@ -102,10 +101,10 @@ define nginx::site (
     # Define a default location
     if ($default_location == true) {
         nginx::location { "${name}_default":
-            site_name   => $name,
-            location    => '/',
-            www_root    => "${siteroot}/htdocs",
-            require     => Class['nginx'],
+            site_name => $name,
+            location  => '/',
+            www_root  => "${siteroot}/htdocs",
+            require   => Class['nginx'],
         }
     }
 }
