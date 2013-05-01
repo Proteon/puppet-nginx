@@ -7,7 +7,7 @@
 define nginx::site (
     $ensure            = present,
     $server_names      = [$name],
-    $listen_ip         = '*',
+    $listen_ip         = undef,
     $listen_port       = '80',
     $listen_options    = undef,
     $log_format        = 'main',
