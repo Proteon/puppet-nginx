@@ -11,7 +11,7 @@ class nginx (
     $additional_config       = '',
     $version                 = held,
 ) {
-    
+
     # General
     File {
         owner   => 'root',
@@ -66,6 +66,8 @@ class nginx (
     # Delete some default configuration files
     file {
         [ '/etc/nginx/conf.d/default.conf',
+          '/etc/nginx/sites-available/default',
+          '/etc/nginx/sites-enabled/default',
           '/etc/nginx/conf.d/example_ssl.conf']:
             ensure  => absent,
     }
