@@ -48,6 +48,7 @@ define nginx::site (
             mode    => '0770',
             source  => $ssl_cert,
             require => File["${sslroot}/${name}"],
+            notify  => Exec['nginx-reload'],
         }
 
         file { "${sslroot}/${name}/${name}.key":
@@ -56,6 +57,7 @@ define nginx::site (
             mode    => '0770',
             source  => $ssl_key,
             require => File["${sslroot}/${name}"],
+            notify  => Exec['nginx-reload'],
         }
     }
 
