@@ -6,10 +6,10 @@
 # TODO add parameter docs
 # TODO add usage examples
 define nginx::location (
-    $site_name, # site name (not necessarily a domain name)
     $location,
     $location_alias         = undef,
     $www_root               = undef,
+    $site_name              = $name, # site name (not necessarily a domain name)
     $index_files            = ['index.html', 'index.htm', 'index.php'],
     $proxy                  = undef,
     $proxy_read_timeout     = '300s',
