@@ -42,7 +42,7 @@ class nginx (
         '/etc/nginx/conf.d',
         '/etc/nginx/sites-available',
         '/etc/nginx/sites-enabled',
-        # '/etc/nginx/upstreams.d', # maybe for later, when we setup loadbalancing
+        '/etc/nginx/upstreams.d',
         '/opt/www', # F: this makes it mutually exclusive with our apache module
         '/opt/www/sites',
     ]:
