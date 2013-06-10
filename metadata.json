@@ -16,7 +16,7 @@
     "manifests/location.pp": "934dc262bbfd2e60842117cd6f1a8d8f",
     "manifests/service.pp": "f94d81f55caadf7a06ee042ea61fc883",
     "manifests/site.pp": "0863bf3221e58e5279007ffc628aa7b0",
-    "manifests/upstream.pp": "78c5408e5d507f46c6f0c152d4109d84",
+    "manifests/upstream.pp": "88d07d68e7675f729e6d103d185dd172",
     "templates/nginx.conf.erb": "4dc0762f04d1cfbcf63369d93e6a679c",
     "templates/upstream.erb": "496947636327d5822de80e4df5e69580",
     "templates/vhost_footer.erb": "1e4ba75fdd71e441a7d249de21150a1d",

@@ -9,9 +9,10 @@ define nginx::upstream (
     $sticky_session_domain  = undef,
     $additional_configuration = '',
 ) {
+    include nginx
+
     file { "/etc/nginx/upstreams.d/${name}.conf":
         content => template('nginx/upstream.erb'),
-        require => Class['nginx::package'],
         notify  => Exec['nginx-reload'],
     }
 }
