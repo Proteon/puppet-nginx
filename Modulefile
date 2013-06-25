@@ -1,5 +1,5 @@
 name 'proteon-nginx'
-version '0.1.8'
+version '0.2.0'
 
 author 'Proteon'
 license 'Apache License, Version 2.0'

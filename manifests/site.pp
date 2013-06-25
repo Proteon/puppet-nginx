@@ -6,6 +6,7 @@
 # TODO add usage examples
 define nginx::site (
     $ensure            = present,
+    $group             = undef, # use the same group to bunble multiple sites in one config file
     $server_names      = [$name],
     $listen_ip         = undef,
     $listen_port       = '80',
@@ -20,6 +21,14 @@ define nginx::site (
     # General variables
     $siteroot = "/opt/www/sites/${name}"
     $sslroot  = '/opt/ssl'
+
+    if ($group) {
+        $config_name = $group
+    } else {
+        $config_name = $name
+    }
+
+#    notify {"site for ${name} with config_name '${config_name}'": }
 
     include nginx
 
@@ -61,16 +70,18 @@ define nginx::site (
         }
     }
 
-    file { "/etc/nginx/sites-enabled/${name}.conf":
-        ensure  => 'link',
-        target  => "/etc/nginx/sites-available/${name}.conf",
-        require => [File["/etc/nginx/sites-available/${name}.conf"], File[$siteroot], File["${siteroot}/htdocs"], File["${siteroot}/logs"
-                ]],
-        notify  => Exec['nginx-reload'],
+    if !defined(File["/etc/nginx/sites-enabled/${config_name}.conf"]) {
+        file { "/etc/nginx/sites-enabled/${config_name}.conf":
+            ensure  => 'link',
+            target  => "/etc/nginx/sites-available/${config_name}.conf",
+            require => [File["/etc/nginx/sites-available/${config_name}.conf"], File[$siteroot], File["${siteroot}/htdocs"], File["${siteroot}/logs"
+                    ]],
+            notify  => Exec['nginx-reload'],
+        }
     }
 
     # Create vhost directory for htdocs and logs
-    if !defined(File["/opt/www/sites/${name}"]) {
+    if !defined(File["/opt/www/sites/${config_name}"]) {
         file { [$siteroot, "${siteroot}/htdocs", "${siteroot}/logs"]:
             ensure  => directory,
             owner   => 'root',
@@ -83,27 +94,30 @@ define nginx::site (
     include concat::setup
 
     # Create a concat file for the vhosts configuration
-    concat { "/etc/nginx/sites-available/${name}.conf":
-        notify  => Exec['nginx-reload'],
-        require => Class['nginx'],
+    if !defined(Concat["/etc/nginx/sites-available/${config_name}.conf"]) {
+        concat { "/etc/nginx/sites-available/${config_name}.conf":
+            notify  => Exec['nginx-reload'],
+            require => Class['nginx'],
+        }
     }
 
-    concat::fragment { "nginx_${name}_header":
-        target  => "/etc/nginx/sites-available/${name}.conf",
-        order   => '00',
+    concat::fragment { "nginx_${config_name}_header for ${name}":
+        target  => "/etc/nginx/sites-available/${config_name}.conf",
+        order   => "${name}-00",
         content => template('nginx/vhost_header.erb'),
     }
 
-    concat::fragment { "nginx_${name}_footer":
-        target  => "/etc/nginx/sites-available/${name}.conf",
-        order   => '99',
+    concat::fragment { "nginx_${config_name}_footer ${name}":
+        target  => "/etc/nginx/sites-available/${config_name}.conf",
+        order   => "${name}-99",
         content => template('nginx/vhost_footer.erb'),
     }
 
     # Define a default location
     if ($default_location == true) {
-        nginx::location { "${name}_default":
+        nginx::location { "${config_name}_default":
             site_name => $name,
+            site_group => $group,
             location  => '/',
             www_root  => "${siteroot}/htdocs",
             require   => Class['nginx'],

@@ -10,6 +10,7 @@ define nginx::location (
     $location_alias         = undef,
     $www_root               = undef,
     $site_name              = $name, # site name (not necessarily a domain name)
+    $site_group             = undef, # cluster config in a group
     $index_files            = ['index.html', 'index.htm', 'index.php'],
     $proxy                  = undef,
     $proxy_read_timeout     = '300s',
@@ -18,6 +19,15 @@ define nginx::location (
     $options                = [],
     $concat_order           = '01',
 ) {
+
+    if ($site_group) {
+        $config_name = $site_group
+    } else {
+        $config_name = $site_name
+    }
+
+#    notify {"location for ${name} with config_name '${config_name}'": }
+
     if ($proxy != undef) {
         $content = template('nginx/vhost_location_proxy.erb')
     } elsif ($location_alias != undef) {
@@ -29,8 +39,8 @@ define nginx::location (
     }
 
     concat::fragment { "nginx location ${name} for ${site_name}":
-        target  => "/etc/nginx/sites-available/${site_name}.conf",
-        order   => $concat_order,
+        target  => "/etc/nginx/sites-available/${config_name}.conf",
+        order   => "${site_name}-${concat_order}",
         content => $content,
     }
 }
