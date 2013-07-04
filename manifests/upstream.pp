@@ -1,3 +1,4 @@
+# TODO: add documentation
 define nginx::upstream (
     $members,
     $members_check          = undef,
