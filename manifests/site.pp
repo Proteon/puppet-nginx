@@ -116,11 +116,11 @@ define nginx::site (
     # Define a default location
     if ($default_location == true) {
         nginx::location { "${config_name}_default":
-            site_name => $name,
+            site_name  => $name,
             site_group => $group,
-            location  => '/',
-            www_root  => "${siteroot}/htdocs",
-            require   => Class['nginx'],
+            location   => '/',
+            www_root   => "${siteroot}/htdocs",
+            require    => Class['nginx'],
         }
     }
 }
