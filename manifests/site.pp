@@ -28,15 +28,24 @@ define nginx::site (
         $config_name = $name
     }
 
-#    notify {"site for ${name} with config_name '${config_name}'": }
-
     include nginx
 
-    # SSL
-    if ($ssl == true) {
+    $ensure_link = $ensure ? {
+        absent  => absent,
+        present => link,
+        default => link,
+    }
+
+    $ensure_directory = $ensure ? {
+        absent  => absent,
+        present => directory,
+        default => directory,
+    }
+
+   if ($ssl == true) {
         if !defined(File[$sslroot]) {
             file { $sslroot:
-                ensure => directory,
+                ensure => $ensure_directory,
                 owner  => 'root',
                 group  => 'www-data',
                 mode   => '2755',
@@ -44,7 +53,7 @@ define nginx::site (
         }
 
         file { "${sslroot}/${name}":
-            ensure  => directory,
+            ensure  => $ensure_directory,
             owner   => 'root',
             group   => 'www-data',
             mode    => '2755',
@@ -52,6 +61,7 @@ define nginx::site (
         }
 
         file { "${sslroot}/${name}/${name}.crt":
+            ensure  => $ensure,
             owner   => 'root',
             group   => 'www-data',
             mode    => '0770',
@@ -61,6 +71,7 @@ define nginx::site (
         }
 
         file { "${sslroot}/${name}/${name}.key":
+            ensure  => $ensure,
             owner   => 'root',
             group   => 'www-data',
             mode    => '0770',
@@ -72,7 +83,7 @@ define nginx::site (
 
     if !defined(File["/etc/nginx/sites-enabled/${config_name}.conf"]) {
         file { "/etc/nginx/sites-enabled/${config_name}.conf":
-            ensure  => 'link',
+            ensure  => $ensure_link,
             target  => "/etc/nginx/sites-available/${config_name}.conf",
             require => [File["/etc/nginx/sites-available/${config_name}.conf"], File[$siteroot], File["${siteroot}/htdocs"], File["${siteroot}/logs"
                     ]],
@@ -83,11 +94,12 @@ define nginx::site (
     # Create vhost directory for htdocs and logs
     if !defined(File["/opt/www/sites/${config_name}"]) {
         file { [$siteroot, "${siteroot}/htdocs", "${siteroot}/logs"]:
-            ensure  => directory,
+            ensure  => $ensure_directory,
             owner   => 'root',
             group   => 'www-data',
             mode    => '2755',
             require => Class['nginx'],
+            force   => true,
         }
     }
 
@@ -102,12 +114,14 @@ define nginx::site (
     }
 
     concat::fragment { "nginx_${config_name}_header for ${name}":
+        ensure  => $ensure,
         target  => "/etc/nginx/sites-available/${config_name}.conf",
         order   => "${name}-00",
         content => template('nginx/vhost_header.erb'),
     }
 
     concat::fragment { "nginx_${config_name}_footer ${name}":
+        ensure  => $ensure,
         target  => "/etc/nginx/sites-available/${config_name}.conf",
         order   => "${name}-99",
         content => template('nginx/vhost_footer.erb'),
@@ -116,11 +130,11 @@ define nginx::site (
     # Define a default location
     if ($default_location == true) {
         nginx::location { "${config_name}_default":
-            site_name  => $name,
+            site_name => $name,
             site_group => $group,
-            location   => '/',
-            www_root   => "${siteroot}/htdocs",
-            require    => Class['nginx'],
+            location  => '/',
+            www_root  => "${siteroot}/htdocs",
+            require   => Class['nginx'],
         }
     }
 }
