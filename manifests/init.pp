@@ -20,8 +20,13 @@ class nginx (
         require => Package['nginx'],
     }
 
+    $ensure = $::nginxversion ? {
+        $version => held,
+        default  => $version,
+    }
+
     package { 'nginx':
-        ensure  => $version,
+        ensure  => $ensure,
     }
 
     # Logrotate
