@@ -8,7 +8,3 @@ server {
 	ssl_certificate_key		/opt/ssl/<%= config_name %>/<%= name %>.key;
 	
 	ssl_session_timeout		10m;
-
-	ssl_protocols			SSLv3 TLSv1;
-	ssl_ciphers			ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM;
-	ssl_prefer_server_ciphers	on;<% end %>
