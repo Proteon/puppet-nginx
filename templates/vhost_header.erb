@@ -1,11 +1,11 @@
 server {
-	listen		<% if @listen_ip %><%= listen_ip %>:<% end %><%= listen_port %> <% if @listen_options %><%= listen_options %><% end %>;
-	server_name	<%= server_names.join(" ") %>;
-	access_log	/opt/www/sites/<%= config_name %>/logs/access.log <%= log_format %>;
-	<% if ssl == true %>
+	listen		<% if @listen_ip %><%= @listen_ip %>:<% end %><%= @listen_port %> <% if @listen_options %><%= @listen_options %><% end %>;
+	server_name	<%= @server_names.join(" ") %>;
+	access_log	/opt/www/sites/<%= @config_name %>/logs/access.log <%= @log_format %>;
+	<% if @ssl == true %>
 	ssl				on;
-	ssl_certificate			/opt/ssl/<%= config_name %>/<%= name %>.crt;
-	ssl_certificate_key		/opt/ssl/<%= config_name %>/<%= name %>.key;
+	ssl_certificate			/opt/ssl/<%= @config_name %>/<%= @name %>.crt;
+	ssl_certificate_key		/opt/ssl/<%= @config_name %>/<%= @name %>.key;
 	
 	ssl_session_timeout		10m;
 	<% end %>

@@ -1,6 +1,6 @@
 	
-	location <%= location %> {
-<% if @options -%><% options.each do |hash| -%><% hash.keys.each do |key| -%>
+	location <%= @location %> {
+<% if @options -%><% @options.each do |hash| -%><% hash.keys.each do |key| -%>
 		<%= key %> <%= hash[key] %>;
 <% end -%><% end -%><% end -%>
 	}
