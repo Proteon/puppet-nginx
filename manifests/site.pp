@@ -6,7 +6,7 @@
 # TODO add usage examples
 define nginx::site (
     $ensure            = present,
-    $group             = undef, # use the same group to bunble multiple sites in one config file
+    $group             = undef, # use the same group to bundle multiple sites in one config file
     $server_names      = [$name],
     $listen_ip         = undef,
     $listen_port       = '80',
