@@ -14,7 +14,9 @@ define nginx::site (
     $log_format        = 'main',
     $ssl               = false,
     $ssl_cert          = undef,
+    $ssl_cert_content  = undef,
     $ssl_key           = undef,
+    $ssl_key_content   = undef,
     $ssl_redirect      = false,
     $ssl_redirect_port = '80',
     $default_location  = true,) {
@@ -60,22 +62,24 @@ define nginx::site (
             require => File[$sslroot],
         }
 
-        file { "${sslroot}/${name}/${name}.crt":
+        file { "${sslroot}/${config_name}/${name}.crt":
             ensure  => $ensure,
             owner   => 'root',
             group   => 'www-data',
             mode    => '0770',
             source  => $ssl_cert,
+            content => $ssl_cert_content,
             require => File["${sslroot}/${name}"],
             notify  => Exec['nginx-reload'],
         }
 
-        file { "${sslroot}/${name}/${name}.key":
+        file { "${sslroot}/${config_name}/${name}.key":
             ensure  => $ensure,
             owner   => 'root',
             group   => 'www-data',
             mode    => '0770',
             source  => $ssl_key,
+            content => $ssl_key_content,
             require => File["${sslroot}/${name}"],
             notify  => Exec['nginx-reload'],
         }
