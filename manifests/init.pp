@@ -10,6 +10,8 @@ class nginx (
     $error_loglevel          = 'warn', # debug | info | notice | warn | error | crit | alert | emerg
     $additional_config       = '',
     $version                 = held,
+    $package                 = 'nginx', # may override with for instance 'nginx-extras' or 'nginx-light' 
+    $use_nginx_repository    = false,
 ) {
 
     # General
@@ -20,12 +22,25 @@ class nginx (
         require => Package['nginx'],
     }
 
+    if ($use_nginx_repository == true or $use_nginx_repository == 'true') {
+    
+        apt::source { 'nginx':
+            location   => 'http://ppa.launchpad.net/nginx/stable/ubuntu',
+            release    => $::lsbdistcodename,
+            repos      => 'main',
+            key        => 'C300EE8C',
+            key_server => 'keys.gnupg.net',
+        }
+    
+    }
+
     $ensure = $::nginxversion ? {
         $version => held,
         default  => $version,
     }
 
     package { 'nginx':
+        name    => $package,
         ensure  => $ensure,
     }
 
