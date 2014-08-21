@@ -11,6 +11,7 @@ define nginx::site (
     $listen_ip         = undef,
     $listen_port       = '80',
     $listen_options    = undef,
+    $access_log_filename = 'access.log',
     $log_format        = 'main',
     $ssl               = false,
     $ssl_cert          = undef,
@@ -19,7 +20,8 @@ define nginx::site (
     $ssl_key_content   = undef,
     $ssl_redirect      = false,
     $ssl_redirect_port = '80',
-    $default_location  = true,) {
+    $default_location  = true,
+) {
     # General variables
     $siteroot = "/opt/www/sites/${name}"
     $sslroot  = '/opt/ssl'
@@ -54,7 +56,7 @@ define nginx::site (
             }
         }
 
-        file { "${sslroot}/${name}":
+        file { "${sslroot}/${config_name}":
             ensure  => $ensure_directory,
             owner   => 'root',
             group   => 'www-data',
@@ -69,7 +71,7 @@ define nginx::site (
             mode    => '0770',
             source  => $ssl_cert,
             content => $ssl_cert_content,
-            require => File["${sslroot}/${name}"],
+            require => File["${sslroot}/${config_name}"],
             notify  => Exec['nginx-reload'],
         }
 
@@ -80,7 +82,7 @@ define nginx::site (
             mode    => '0770',
             source  => $ssl_key,
             content => $ssl_key_content,
-            require => File["${sslroot}/${name}"],
+            require => File["${sslroot}/${config_name}"],
             notify  => Exec['nginx-reload'],
         }
     }
@@ -107,7 +109,8 @@ define nginx::site (
         }
     }
 
-    include concat::setup
+    # deprecated concat feature
+    # include concat::setup
 
     # Create a concat file for the vhosts configuration
     if !defined(Concat["/etc/nginx/sites-available/${config_name}.conf"]) {

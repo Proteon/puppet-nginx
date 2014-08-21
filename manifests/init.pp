@@ -8,11 +8,17 @@ class nginx (
     $client_max_body_size    = '32M',
     $client_body_buffer_size = '256k',
     $error_loglevel          = 'warn', # debug | info | notice | warn | error | crit | alert | emerg
+    $logrotate_paths         = '/opt/www/sites/*/logs/*.log',
+    $logrotate_count         = 52, # -1 to disable the removal of the logs
     $additional_config       = '',
     $version                 = held,
     $package                 = 'nginx', # may override with for instance 'nginx-extras' or 'nginx-light' 
     $use_nginx_repository    = false,
 ) {
+
+    if (!is_numeric($logrotate_count)) {
+        fail('logrotate_count must be numeric')
+    }
 
     # General
     File {
@@ -72,8 +78,8 @@ class nginx (
     file { '/etc/logrotate.d/nginx':
         owner   => 'root',
         group   => 'root',
-        mode    => '0755',
-        source  => 'puppet:///modules/nginx/nginx.logrotate',
+        mode    => '0644',
+        content => template('nginx/nginx.logrotate.erb'),
         require => Package['logrotate'],
     }
 

@@ -1,0 +1,14 @@
+# DO NOT EDIT!
+/var/log/nginx/*.log <%= @logrotate_paths %> {
+        daily
+        missingok
+        <% if @logrotate_count >= 0 %>rotate <%= @logrotate_count %><% end %>
+        compress
+        delaycompress
+        notifempty
+        create 644 root www-data
+        sharedscripts
+        postrotate
+                [ -f /var/run/nginx.pid ] && kill -USR1 `cat /var/run/nginx.pid`
+        endscript
+}

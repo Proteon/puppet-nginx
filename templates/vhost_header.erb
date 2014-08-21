@@ -1,11 +1,18 @@
 server {
 	listen		<% if @listen_ip %><%= @listen_ip %>:<% end %><%= @listen_port %> <% if @listen_options %><%= @listen_options %><% end %>;
 	server_name	<%= @server_names.join(" ") %>;
-	access_log	/opt/www/sites/<%= @config_name %>/logs/access.log <%= @log_format %>;
+	access_log	/opt/www/sites/<%= @config_name %>/logs/<%= @access_log_filename %> <%= @log_format %>;
 	<% if @ssl == true %>
 	ssl				on;
 	ssl_certificate			/opt/ssl/<%= @config_name %>/<%= @name %>.crt;
 	ssl_certificate_key		/opt/ssl/<%= @config_name %>/<%= @name %>.key;
-	
-	ssl_session_timeout		10m;
+
+	# ssllabs recommendation
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+	ssl_prefer_server_ciphers on;
+	ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
+
+	# should support about 40K unique sessions in 10 min
+	ssl_session_cache shared:SSL:10m;
+	ssl_session_timeout 10m;
 	<% end %>
