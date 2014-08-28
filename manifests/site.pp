@@ -13,6 +13,7 @@ define nginx::site (
     $listen_options    = undef,
     $access_log_filename = 'access.log',
     $log_format        = 'main',
+    $extra_server_config = '',
     $ssl               = false,
     $ssl_cert          = undef,
     $ssl_cert_content  = undef,
