@@ -57,12 +57,14 @@ define nginx::site (
             }
         }
 
-        file { "${sslroot}/${config_name}":
-            ensure  => $ensure_directory,
-            owner   => 'root',
-            group   => 'www-data',
-            mode    => '2755',
-            require => File[$sslroot],
+        if (!defined(File["${sslroot}/${config_name}"])) {
+            file { "${sslroot}/${config_name}":
+                ensure  => $ensure_directory,
+                owner   => 'root',
+                group   => 'www-data',
+                mode    => '2755',
+                require => File[$sslroot],
+            }
         }
 
         file { "${sslroot}/${config_name}/${name}.crt":
