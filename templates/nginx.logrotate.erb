@@ -2,7 +2,8 @@
 /var/log/nginx/*.log <%= @logrotate_paths %> {
         daily
         missingok
-        <% if @logrotate_count >= 0 %>rotate <%= @logrotate_count %><% end %>
+        <% if @logrotate_count %>rotate <%= @logrotate_count %><% end %>
+        <% if @logrotate_dateext %>dateext<% end %>
         compress
         delaycompress
         notifempty

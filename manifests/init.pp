@@ -9,7 +9,8 @@ class nginx (
     $client_body_buffer_size = '256k',
     $error_loglevel          = 'warn', # debug | info | notice | warn | error | crit | alert | emerg
     $logrotate_paths         = '/opt/www/sites/*/logs/*.log',
-    $logrotate_count         = 52, # -1 to disable the removal of the logs
+    $logrotate_count         = 52,
+    $logrotate_dateext       = false,
     $additional_config       = '',
     $version                 = held,
     $package                 = 'nginx', # may override with for instance 'nginx-extras' or 'nginx-light' 
