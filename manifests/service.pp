@@ -1,9 +1,11 @@
 # Helper class to define Nginx's service
 # TODO: this is for internal use only?
-class nginx::service {
+class nginx::service (
+    $enabled = true, # true, false or 'manual'
+) {
     service { 'nginx':
-        ensure      => running,
-        enable      => true,
+        ensure      => 'running',
+        enable      => $enabled,
         hasstatus   => true,
         hasrestart  => true,
     }
