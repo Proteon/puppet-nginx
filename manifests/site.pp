@@ -7,6 +7,7 @@
 define nginx::site (
     $ensure            = present,
     $group             = undef, # use the same group to bundle multiple sites in one config file
+    $siteroot          = "/opt/www/sites/${name}",
     $server_names      = [$name],
     $listen_ip         = undef,
     $listen_port       = '80',
@@ -23,8 +24,7 @@ define nginx::site (
     $ssl_redirect_port = '80',
     $default_location  = true,
 ) {
-    # General variables
-    $siteroot = "/opt/www/sites/${name}"
+    # General variable(s)
     $sslroot  = '/opt/ssl'
 
     if ($group) {
