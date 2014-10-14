@@ -48,6 +48,7 @@ define nginx::site (
     }
 
    if ($ssl == true) {
+
         if !defined(File[$sslroot]) {
             file { $sslroot:
                 ensure => $ensure_directory,
@@ -72,8 +73,14 @@ define nginx::site (
             owner   => 'root',
             group   => 'www-data',
             mode    => '0770',
-            source  => $ssl_cert,
-            content => $ssl_cert_content,
+            source  => $ensure ? {
+                present => $ssl_cert,
+                absent  => undef,
+            },
+            content => $ensure ? {
+                present => $ssl_cert_content,
+                absent  => undef,
+            },
             require => File["${sslroot}/${config_name}"],
             notify  => Exec['nginx-reload'],
         }
@@ -83,8 +90,14 @@ define nginx::site (
             owner   => 'root',
             group   => 'www-data',
             mode    => '0770',
-            source  => $ssl_key,
-            content => $ssl_key_content,
+            source  => $ensure ? {
+                present => $ssl_key,
+                absent  => undef,
+            },
+            content => $ensure ? {
+                present => $ssl_key_content,
+                absent  => undef,
+            },
             require => File["${sslroot}/${config_name}"],
             notify  => Exec['nginx-reload'],
         }
