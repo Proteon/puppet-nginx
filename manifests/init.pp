@@ -12,6 +12,7 @@ class nginx (
     $logrotate_count         = 52,
     $logrotate_dateext       = false,
     $additional_config       = '',
+    $additional_main_config  = '',
     $version                 = held,
     $package                 = 'nginx', # may override with for instance 'nginx-extras' or 'nginx-light' 
     $use_nginx_repository    = false,

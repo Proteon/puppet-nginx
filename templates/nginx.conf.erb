@@ -4,6 +4,8 @@ worker_processes  <%= @worker_processes %>;
 error_log  /var/log/nginx/error.log <%= @error_loglevel %>;
 pid        /var/run/nginx.pid;
 
+<%= @additional_main_config -%>
+
 events {
     worker_connections  <%= @worker_connections %>;
     use epoll;
