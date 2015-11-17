@@ -36,7 +36,7 @@ class nginx (
             location   => 'http://ppa.launchpad.net/nginx/stable/ubuntu',
             release    => $::lsbdistcodename,
             repos      => 'main',
-            key        => 'C300EE8C',
+            key        => '8B3981E7A6852F782CC4951600A6F0A3C300EE8C',
             key_server => 'keys.gnupg.net',
         }
     
