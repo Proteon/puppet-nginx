@@ -23,6 +23,7 @@ define nginx::site (
     $ssl_redirect      = false,
     $ssl_redirect_port = '80',
     $default_location  = true,
+    $redirect_url      = undef,
 ) {
     # General variable(s)
     $sslroot  = '/opt/ssl'

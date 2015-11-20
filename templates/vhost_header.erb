@@ -18,4 +18,4 @@ server {
 	# should support about 40K unique sessions in 10 min
 	ssl_session_cache shared:SSL:10m;
 	ssl_session_timeout 10m;
-	<% end %>
+	<% end %><% if @redirect_url %>return 301 $scheme://<%= @redirect_url %>$request_uri;<% end %>
