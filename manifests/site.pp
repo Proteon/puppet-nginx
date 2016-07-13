@@ -51,12 +51,13 @@ define nginx::site (
    if ($ssl == true) {
 
         if !defined(File[$sslroot]) {
-            file { $sslroot:
-                ensure => $ensure_directory,
+            ensure_resource('file', '/opt/ssl/', {
+                ensure => 'directory',
                 owner  => 'root',
-                group  => 'www-data',
-                mode   => '2755',
-            }
+                group  => 'root',
+                mode   => '0755',
+            })
+
         }
 
         if (!defined(File["${sslroot}/${config_name}"])) {
