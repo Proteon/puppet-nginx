@@ -38,7 +38,6 @@ define nginx::location (
     }
 
     concat::fragment { "nginx location ${name} for ${site_name}":
-        ensure  => $ensure,
         target  => "/etc/nginx/sites-available/${config_name}.conf",
         order   => "${site_name}-${concat_order}",
         content => $content,

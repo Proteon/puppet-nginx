@@ -109,7 +109,7 @@ define nginx::site (
         file { "/etc/nginx/sites-enabled/${config_name}.conf":
             ensure  => $ensure_link,
             target  => "/etc/nginx/sites-available/${config_name}.conf",
-            require => [File["/etc/nginx/sites-available/${config_name}.conf"], File[$siteroot], File["${siteroot}/htdocs"], File["${siteroot}/logs"
+            require => [Concat["/etc/nginx/sites-available/${config_name}.conf"], File[$siteroot], File["${siteroot}/htdocs"], File["${siteroot}/logs"
                     ]],
             notify  => Exec['nginx-reload'],
         }
@@ -139,14 +139,12 @@ define nginx::site (
     }
 
     concat::fragment { "nginx_${config_name}_header for ${name}":
-        ensure  => $ensure,
         target  => "/etc/nginx/sites-available/${config_name}.conf",
         order   => "${name}-00",
         content => template('nginx/vhost_header.erb'),
     }
 
     concat::fragment { "nginx_${config_name}_footer ${name}":
-        ensure  => $ensure,
         target  => "/etc/nginx/sites-available/${config_name}.conf",
         order   => "${name}-99",
         content => template('nginx/vhost_footer.erb'),
