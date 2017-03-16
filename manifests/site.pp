@@ -22,6 +22,7 @@ define nginx::site (
     $ssl_key_content   = undef,
     $ssl_redirect      = false,
     $ssl_redirect_port = '80',
+    $ssl_redirect_type = 'redirect',
     $default_location  = true,
     $redirect_url      = undef,
 ) {
