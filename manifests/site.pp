@@ -22,8 +22,10 @@ define nginx::site (
     $ssl_key_content   = undef,
     $ssl_redirect      = false,
     $ssl_redirect_port = '80',
+    $ssl_redirect_type = 'redirect',
     $default_location  = true,
     $redirect_url      = undef,
+    $include_base      = true,
 ) {
     # General variable(s)
     $sslroot  = '/opt/ssl'
@@ -34,8 +36,9 @@ define nginx::site (
         $config_name = $name
     }
 
-    include nginx
-
+    if ($include_base == true) {
+        include nginx
+    }
     $ensure_link = $ensure ? {
         absent  => absent,
         present => link,
