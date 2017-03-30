@@ -1,5 +1,6 @@
 	
 	location <%= @location %> {
+        <%= @additional_config %>
 		proxy_pass		<%= @proxy %>;
 <% if @proxy_set_header -%><% @proxy_set_header.each do |hash| -%><% hash.keys.each do |key| -%>
                 proxy_set_header	<%= key %> <%= hash[key] %>;

@@ -19,6 +19,7 @@ define nginx::location (
     $options                = [],
     $concat_order           = '01',
     $ensure                 = present,
+    $additional_config      = undef,
 ) {
 
     if ($site_group) {
