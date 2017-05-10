@@ -27,6 +27,7 @@ define nginx::site (
     $redirect_url      = undef,
     $redirect_https    = false,
     $include_base      = true,
+    $default_server    = false,
 ) {
     # General variable(s)
     $sslroot  = '/opt/ssl'

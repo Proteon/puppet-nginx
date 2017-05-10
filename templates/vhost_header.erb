@@ -1,5 +1,5 @@
 server {
-	listen		<% if @listen_ip %><%= @listen_ip %>:<% end %><%= @listen_port %> <% if @listen_options %><%= @listen_options %><% end %>;
+	listen		<% if @listen_ip %><%= @listen_ip %>:<% end %><%= @listen_port %> <% if @listen_options %><%= @listen_options %><% end %><% if @default_server %> default_server<% end %>;
 	server_name	<%= @server_names.join(" ") %>;
 	access_log	/opt/www/sites/<%= @config_name %>/logs/<%= @access_log_filename %> <%= @log_format %>;
 
