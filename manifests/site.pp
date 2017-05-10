@@ -25,6 +25,7 @@ define nginx::site (
     $ssl_redirect_type = 'redirect',
     $default_location  = true,
     $redirect_url      = undef,
+    $redirect_https    = false,
     $include_base      = true,
 ) {
     # General variable(s)
