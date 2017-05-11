@@ -5,29 +5,30 @@
 # TODO add parameter docs
 # TODO add usage examples
 define nginx::site (
-    $ensure            = present,
-    $group             = undef, # use the same group to bundle multiple sites in one config file
-    $siteroot          = "/opt/www/sites/${name}",
-    $server_names      = [$name],
-    $listen_ip         = undef,
-    $listen_port       = '80',
-    $listen_options    = undef,
+    $ensure              = present,
+    $group               = undef, # use the same group to bundle multiple sites in one config file
+    $siteroot            = "/opt/www/sites/${name}",
+    $server_names        = [$name],
+    $listen_ip           = undef,
+    $listen_port         = '80',
+    $listen_options      = undef,
     $access_log_filename = 'access.log',
-    $log_format        = 'main',
+    $log_format          = 'main',
     $extra_server_config = '',
-    $ssl               = false,
-    $ssl_cert          = undef,
-    $ssl_cert_content  = undef,
-    $ssl_key           = undef,
-    $ssl_key_content   = undef,
-    $ssl_redirect      = false,
-    $ssl_redirect_port = '80',
-    $ssl_redirect_type = 'redirect',
-    $default_location  = true,
-    $redirect_url      = undef,
-    $redirect_https    = false,
-    $include_base      = true,
-    $default_server    = false,
+    $ssl                 = false,
+    $ssl_cert            = undef,
+    $ssl_cert_content    = undef,
+    $ssl_key             = undef,
+    $ssl_key_content     = undef,
+    $ssl_redirect        = false,
+    $ssl_redirect_port   = '80',
+    $ssl_redirect_type   = 'redirect',
+    $default_location    = true,
+    $redirect_url        = undef,
+    $redirect_https      = false,
+    $include_base        = true,
+    $default_server      = false,
+    $add_backend_header  = false, #if true adds X-Backend-Server header
 ) {
     # General variable(s)
     $sslroot  = '/opt/ssl'
