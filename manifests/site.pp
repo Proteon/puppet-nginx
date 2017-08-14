@@ -57,8 +57,8 @@ define nginx::site (
             ensure_resource('file', '/opt/ssl/', {
                 ensure => 'directory',
                 owner  => 'root',
-                group  => 'root',
-                mode   => '0755',
+                group  => 'www-data',
+                mode   => '0640',
             })
 
         }
@@ -68,7 +68,7 @@ define nginx::site (
                 ensure  => $ensure_directory,
                 owner   => 'root',
                 group   => 'www-data',
-                mode    => '2755',
+                mode    => '0644',
                 require => File[$sslroot],
             }
         }
@@ -77,7 +77,7 @@ define nginx::site (
             ensure  => $ensure,
             owner   => 'root',
             group   => 'www-data',
-            mode    => '0770',
+            mode    => '0640',
             source  => $ensure ? {
                 present => $ssl_cert,
                 absent  => undef,
@@ -94,7 +94,7 @@ define nginx::site (
             ensure  => $ensure,
             owner   => 'root',
             group   => 'www-data',
-            mode    => '0770',
+            mode    => '0640',
             source  => $ensure ? {
                 present => $ssl_key,
                 absent  => undef,
@@ -124,7 +124,7 @@ define nginx::site (
             ensure  => $ensure_directory,
             owner   => 'root',
             group   => 'www-data',
-            mode    => '2755',
+            mode    => '0664',
             require => Class['nginx'],
             force   => true,
         }
