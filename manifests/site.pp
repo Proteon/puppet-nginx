@@ -30,6 +30,7 @@ define nginx::site (
     $default_server      = false,
     $add_backend_header  = false, #if true adds X-Backend-Server header
     $letsencrypt         = false,
+    $letsencrypt_name    = $name,
     $letsencrypt_auth    = false,
 ) {
     # General variable(s)
@@ -58,8 +59,8 @@ define nginx::site (
 
    if ($ssl == true) {
         if ($letsencrypt == true) {
-            $ssl_certificate = "/etc/letsencrypt/live/${config_name}/fullchain.pem" 
-            $ssl_certificate_key = "/etc/letsencrypt/live/${config_name}/privkey.pem"
+            $ssl_certificate = "/etc/letsencrypt/live/${letsencrypt_name}/fullchain.pem" 
+            $ssl_certificate_key = "/etc/letsencrypt/live/${letsencrypt_name}/privkey.pem"
         } else {
             if !defined(File[$sslroot]) {
                 ensure_resource('file', '/opt/ssl/', {
