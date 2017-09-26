@@ -7,8 +7,8 @@ server {
 
 	<% if @ssl == true %>
 	ssl				on;
-	ssl_certificate			/opt/ssl/<%= @config_name %>/<%= @name %>.crt;
-	ssl_certificate_key		/opt/ssl/<%= @config_name %>/<%= @name %>.key;
+	ssl_certificate			<%= @ssl_certificate %>;
+	ssl_certificate_key		<%= @ssl_certificate_key %>;
 
 	# ssllabs recommendation
 	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
@@ -18,4 +18,10 @@ server {
 	# should support about 40K unique sessions in 10 min
 	ssl_session_cache shared:SSL:10m;
 	ssl_session_timeout 10m;
-	<% end %><% if @redirect_url %>return 301<% if @redirect_https %> https://<% else %> $scheme://<% end %><%= @redirect_url %>$request_uri;<% end %>
+	<% end %><% if @letsencrypt_auth == true %>
+    location /.well-known/acme-challenge {
+        alias /etc/letsencrypt/webrootauth/.well-known/acme-challenge;
+        location ~ /.well-known/acme-challenge/(.*) {
+            add_header Content-Type application/jose+json;
+        }
+    }<% end %><% if @redirect_url %>return 301<% if @redirect_https %> https://<% else %> $scheme://<% end %><%= @redirect_url %>$request_uri;<% end %>

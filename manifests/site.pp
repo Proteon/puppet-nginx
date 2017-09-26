@@ -29,6 +29,8 @@ define nginx::site (
     $include_base        = true,
     $default_server      = false,
     $add_backend_header  = false, #if true adds X-Backend-Server header
+    $letsencrypt         = false,
+    $letsencrypt_auth    = false,
 ) {
     # General variable(s)
     $sslroot  = '/opt/ssl'
@@ -55,59 +57,65 @@ define nginx::site (
     }
 
    if ($ssl == true) {
+        if ($letsencrypt == true) {
+            $ssl_certificate = "/etc/letsencrypt/live/${config_name}/fullchain.pem" 
+            $ssl_certificate_key = "/etc/letsencrypt/live/${config_name}/privkey.pem"
+        } else {
+            if !defined(File[$sslroot]) {
+                ensure_resource('file', '/opt/ssl/', {
+                    ensure => 'directory',
+                    owner  => 'root',
+                    group  => 'www-data',
+                    mode   => '0640',
+                })
+            }
 
-        if !defined(File[$sslroot]) {
-            ensure_resource('file', '/opt/ssl/', {
-                ensure => 'directory',
-                owner  => 'root',
-                group  => 'www-data',
-                mode   => '0640',
-            })
+            if (!defined(File["${sslroot}/${config_name}"])) {
+                file { "${sslroot}/${config_name}":
+                    ensure  => $ensure_directory,
+                    owner   => 'root',
+                    group   => 'www-data',
+                    mode    => '0644',
+                    require => File[$sslroot],
+                }
+            }
 
-        }
-
-        if (!defined(File["${sslroot}/${config_name}"])) {
-            file { "${sslroot}/${config_name}":
-                ensure  => $ensure_directory,
+            file { "${sslroot}/${config_name}/${name}.crt":
+                ensure  => $ensure,
                 owner   => 'root',
                 group   => 'www-data',
-                mode    => '0644',
-                require => File[$sslroot],
+                mode    => '0640',
+                source  => $ensure ? {
+                    present => $ssl_cert,
+                    absent  => undef,
+                },
+                content => $ensure ? {
+                    present => $ssl_cert_content,
+                    absent  => undef,
+                },
+                require => File["${sslroot}/${config_name}"],
+                notify  => Exec['nginx-reload'],
             }
-        }
 
-        file { "${sslroot}/${config_name}/${name}.crt":
-            ensure  => $ensure,
-            owner   => 'root',
-            group   => 'www-data',
-            mode    => '0640',
-            source  => $ensure ? {
-                present => $ssl_cert,
-                absent  => undef,
-            },
-            content => $ensure ? {
-                present => $ssl_cert_content,
-                absent  => undef,
-            },
-            require => File["${sslroot}/${config_name}"],
-            notify  => Exec['nginx-reload'],
-        }
+            file { "${sslroot}/${config_name}/${name}.key":
+                ensure  => $ensure,
+                owner   => 'root',
+                group   => 'www-data',
+                mode    => '0640',
+                source  => $ensure ? {
+                    present => $ssl_key,
+                    absent  => undef,
+                },
+                content => $ensure ? {
+                    present => $ssl_key_content,
+                    absent  => undef,
+                },
+                require => File["${sslroot}/${config_name}"],
+                notify  => Exec['nginx-reload'],
+            }
 
-        file { "${sslroot}/${config_name}/${name}.key":
-            ensure  => $ensure,
-            owner   => 'root',
-            group   => 'www-data',
-            mode    => '0640',
-            source  => $ensure ? {
-                present => $ssl_key,
-                absent  => undef,
-            },
-            content => $ensure ? {
-                present => $ssl_key_content,
-                absent  => undef,
-            },
-            require => File["${sslroot}/${config_name}"],
-            notify  => Exec['nginx-reload'],
+            $ssl_certificate = "${sslroot}/${config_name}/${name}.crt"
+            $ssl_certificate_key = "${sslroot}/${config_name}/${name}.key"
         }
     }
 
