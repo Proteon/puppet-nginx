@@ -67,7 +67,7 @@ define nginx::site (
                     ensure => 'directory',
                     owner  => 'root',
                     group  => 'www-data',
-                    mode   => '0640',
+                    mode   => '0644',
                 })
             }
 
