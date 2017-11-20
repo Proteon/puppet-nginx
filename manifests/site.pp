@@ -10,6 +10,7 @@ define nginx::site (
     $siteroot            = "/opt/www/sites/${name}",
     $server_names        = [$name],
     $listen_ip           = undef,
+    $listen_ipv6         = undef,
     $listen_port         = '80',
     $listen_options      = undef,
     $access_log_filename = 'access.log',
