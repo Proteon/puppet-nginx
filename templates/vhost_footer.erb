@@ -1,10 +1,10 @@
 }
 <% if (@ssl == true) and (@ssl_redirect == true) %>
 server {
-	listen		<% if @listen_ip %><%= @listen_ip %>:<% end %><%= @ssl_redirect_port %> <% if @listen_options %><%= @listen_options %><% end %>;<% if @listen_ipv6 %>
-	listen		<% if @listen_ipv6 %><%= @listen_ipv6 %>:<% end %><%= @ssl_redirect_port %> <% if @listen_options %><%= @listen_options %><% end %>;<% end %>
-	server_name	<%= @server_names.join(" ") %>;
+    listen      <% if @listen_ip %><%= @listen_ip %>:<% end %><%= @ssl_redirect_port %> <% if @listen_options %><%= @listen_options %><% end %>;<% if @listen_ipv6 %>
+    listen      <% if @listen_ipv6 %><%= @listen_ipv6 %>:<% end %><%= @ssl_redirect_port %> <% if @listen_options %><%= @listen_options %><% end %>;<% end %>
+    server_name <%= @server_names.join(" ") %>;
     
-	return	301	https://$server_name$request_uri;
+    return  301 https://$server_name$request_uri;
 }
 <% end %>

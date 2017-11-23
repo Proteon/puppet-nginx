@@ -1,8 +1,8 @@
-	
-	location <%= @location %> {
-		root	<%= @www_root %>;
-		index	<% @index_files.each do |i| %> <%= i %> <% end %>;
+    
+    location <%= @location %> {
+        root    <%= @www_root %>;
+        index   <% @index_files.each do |i| %> <%= i %> <% end %>;
 <% if @options -%><% @options.each do |hash| -%><% hash.keys.each do |key| -%>
                 <%= key %> <%= hash[key] %>;
 <% end -%><% end -%><% end -%>
-	}
+    }
