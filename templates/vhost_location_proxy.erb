@@ -1,13 +1,14 @@
-	
-	location <%= @location %> {
-        <%= @additional_config %>
-		proxy_pass		<%= @proxy %>;
+
+    location <%= @location %> {
+<% if @additional_config %>    <%= @additional_config %>
+<% end -%>
+        proxy_pass              <%= @proxy %>;
 <% if @proxy_set_header -%><% @proxy_set_header.each do |hash| -%><% hash.keys.each do |key| -%>
-                proxy_set_header	<%= key %> <%= hash[key] %>;
+        proxy_set_header        <%= key %> <%= hash[key] %>;
 <% end -%><% end -%><% end -%>
-		proxy_read_timeout	<%= @proxy_read_timeout %>;
-		proxy_connect_timeout	<%= @proxy_connect_timeout %>;
+        proxy_read_timeout      <%= @proxy_read_timeout %>;
+        proxy_connect_timeout   <%= @proxy_connect_timeout %>;
 <% if @options -%><% @options.each do |hash| -%><% hash.keys.each do |key| -%>
-                <%= key %> <%= hash[key] %>;
+        <%= key %>              <%= hash[key] %>;
 <% end -%><% end -%><% end -%>
-	}
+    }
