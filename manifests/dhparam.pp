@@ -8,6 +8,7 @@ class nginx::dhparam (
     exec { 'generate dh param':
         command => "/usr/bin/openssl dhparam -out ${location} ${key_size}",
         creates => $location,
+        require => File['/opt/ssl'],
     }
 
     file { $config_location: 
@@ -17,5 +18,5 @@ class nginx::dhparam (
         require => Exec['generate dh param'],
         notify  => Service['nginx'],
     }
-
 }
+
