@@ -5,6 +5,6 @@ server {
     listen      <% if @listen_ipv6 %><%= @listen_ipv6 %>:<% end %><%= @ssl_redirect_port %> <% if @listen_options %><%= @listen_options %><% end %>;<% end %>
     server_name <%= @server_names.join(" ") %>;
     
-    return  301 https://$server_name$request_uri;
+    return  <%= @ssl_return_code %> https://<%= @ssl_return_type %>$request_uri;
 }
 <% end %>

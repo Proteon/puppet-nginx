@@ -23,7 +23,9 @@ define nginx::site (
     $ssl_key_content     = undef,
     $ssl_redirect        = false,
     $ssl_redirect_port   = '80',
-    $ssl_redirect_type   = 'redirect',
+    $ssl_redirect_type   = undef,
+    $ssl_return_code     = '301',
+    $ssl_return_type     = '$server_name', # Usually $server_name or $host
     $default_location    = true,
     $redirect_url        = undef,
     $redirect_https      = false,
@@ -59,6 +61,10 @@ define nginx::site (
     }
 
    if ($ssl == true) {
+        if $ssl_redirect_type {
+            notice("ssl_redirect_type doesn't do anything, please use ssl_return_code instead")
+        }
+
         if ($letsencrypt == true) {
             $ssl_certificate = "/etc/letsencrypt/live/${letsencrypt_name}/fullchain.pem" 
             $ssl_certificate_key = "/etc/letsencrypt/live/${letsencrypt_name}/privkey.pem"
