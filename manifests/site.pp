@@ -21,6 +21,7 @@ define nginx::site (
     $ssl_cert_content    = undef,
     $ssl_key             = undef,
     $ssl_key_content     = undef,
+    $ssl_protocols	 = 'TLSv1 TLSv1.1 TLSv1.2', 
     $ssl_redirect        = false,
     $ssl_redirect_port   = '80',
     $ssl_redirect_type   = undef,
