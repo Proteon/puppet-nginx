@@ -73,9 +73,14 @@ class nginx (
         '/etc/nginx/upstreams.d',
         '/opt/www', # F: this makes it mutually exclusive with our apache module
         '/opt/www/sites',
-        '/opt/ssl',
     ]:
         ensure  => directory,
+    }
+
+    if !defined(File['/opt/ssl']) {
+        file { '/opt/ssl':
+            ensure  => directory,
+        }
     }
 
     file { '/etc/logrotate.d/nginx':
