@@ -1,9 +1,10 @@
 }
 <% if (@ssl == true) and (@ssl_redirect == true) %>
 server {
-	listen          <% if @listen_ip %><%= @listen_ip %>:<% end %><%= @ssl_redirect_port %> <% if @listen_options %><%= @listen_options %><% end %>;
-	server_name     <%= @server_names.join(" ") %>;
-	
-	rewrite ^ https://$server_name$request_uri? redirect;
+    listen      <% if @listen_ip %><%= @listen_ip %>:<% end %><%= @ssl_redirect_port %> <% if @listen_options %><%= @listen_options %><% end %>;<% if @listen_ipv6 %>
+    listen      <% if @listen_ipv6 %><%= @listen_ipv6 %>:<% end %><%= @ssl_redirect_port %> <% if @listen_options %><%= @listen_options %><% end %>;<% end %>
+    server_name <%= @server_names.join(" ") %>;
+    
+    return  <%= @ssl_return_code %> https://<%= @ssl_return_type %>$request_uri;
 }
 <% end %>

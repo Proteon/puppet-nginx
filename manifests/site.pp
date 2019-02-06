@@ -162,7 +162,6 @@ define nginx::site (
         }
     }
 
-
     if versioncmp($::nginxversion, '1.15') > 0 {
         concat::fragment { "nginx_${config_name}_header for ${name}":
             target  => "/etc/nginx/sites-available/${config_name}.conf",

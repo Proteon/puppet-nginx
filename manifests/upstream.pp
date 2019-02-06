@@ -10,8 +10,6 @@ define nginx::upstream (
     $sticky_session_domain  = undef,
     $additional_configuration = '',
 ) {
-    include nginx
-
     file { "/etc/nginx/upstreams.d/${name}.conf":
         content => template('nginx/upstream.erb'),
         notify  => Exec['nginx-reload'],

@@ -27,7 +27,7 @@ class nginx (
         owner   => 'root',
         group   => 'www-data',
         notify  => Exec['nginx-reload'],
-        require => Package['nginx'],
+        require => Package[$package],
     }
 
     if ($use_nginx_repository == true or $use_nginx_repository == 'true') {
@@ -47,7 +47,7 @@ class nginx (
         default  => $version,
     }
 
-    package { 'nginx':
+    package { $package:
         name    => $package,
         ensure  => $ensure,
     }
@@ -75,6 +75,12 @@ class nginx (
         '/opt/www/sites',
     ]:
         ensure  => directory,
+    }
+
+    if !defined(File['/opt/ssl']) {
+        file { '/opt/ssl':
+            ensure  => directory,
+        }
     }
 
     file { '/etc/logrotate.d/nginx':
