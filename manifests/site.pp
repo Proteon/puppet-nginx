@@ -5,26 +5,39 @@
 # TODO add parameter docs
 # TODO add usage examples
 define nginx::site (
-    $ensure            = present,
-    $group             = undef, # use the same group to bundle multiple sites in one config file
-    $siteroot          = "/opt/www/sites/${name}",
-    $server_names      = [$name],
-    $listen_ip         = undef,
-    $listen_port       = '80',
-    $listen_options    = undef,
+    $ensure              = present,
+    $group               = undef, # use the same group to bundle multiple sites in one config file
+    $siteroot            = "/opt/www/sites/${name}",
+    $server_names        = [$name],
+    $listen_ip           = undef,
+    $listen_ipv6         = undef,
+    $listen_port         = '80',
+    $listen_options      = undef,
     $access_log_filename = 'access.log',
-    $log_format        = 'main',
+    $log_format          = 'main',
     $extra_server_config = '',
-    $ssl               = false,
-    $ssl_cert          = undef,
-    $ssl_cert_content  = undef,
-    $ssl_key           = undef,
-    $ssl_key_content   = undef,
-    $ssl_redirect      = false,
-    $ssl_redirect_port = '80',
-    $default_location  = true,
-    $redirect_url      = undef,
+    $ssl                 = false,
+    $ssl_cert            = undef,
+    $ssl_cert_content    = undef,
+    $ssl_key             = undef,
+    $ssl_key_content     = undef,
+    $ssl_protocols	 = 'TLSv1 TLSv1.1 TLSv1.2', 
+    $ssl_redirect        = false,
+    $ssl_redirect_port   = '80',
+    $ssl_redirect_type   = undef,
+    $ssl_return_code     = '301',
+    $ssl_return_type     = '$server_name', # Usually $server_name or $host
+    $default_location    = true,
+    $redirect_url        = undef,
+    $redirect_https      = false,
+    $include_base        = true,
+    $default_server      = false,
+    $add_backend_header  = false, #if true adds X-Backend-Server header
+    $letsencrypt         = false,
+    $letsencrypt_name    = $name,
+    $letsencrypt_auth    = false,
 ) {
+
     # General variable(s)
     $sslroot  = '/opt/ssl'
 
@@ -34,8 +47,9 @@ define nginx::site (
         $config_name = $name
     }
 
-    include nginx
-
+    if ($include_base == true) {
+        include nginx
+    }
     $ensure_link = $ensure ? {
         absent  => absent,
         present => link,
@@ -49,59 +63,69 @@ define nginx::site (
     }
 
    if ($ssl == true) {
-
-        if !defined(File[$sslroot]) {
-            ensure_resource('file', '/opt/ssl/', {
-                ensure => 'directory',
-                owner  => 'root',
-                group  => 'root',
-                mode   => '0755',
-            })
-
+        if $ssl_redirect_type {
+            notice("ssl_redirect_type doesn't do anything, please use ssl_return_code instead")
         }
 
-        if (!defined(File["${sslroot}/${config_name}"])) {
-            file { "${sslroot}/${config_name}":
-                ensure  => $ensure_directory,
+        if ($letsencrypt == true) {
+            $ssl_certificate = "/etc/letsencrypt/live/${letsencrypt_name}/fullchain.pem" 
+            $ssl_certificate_key = "/etc/letsencrypt/live/${letsencrypt_name}/privkey.pem"
+        } else {
+            if !defined(File[$sslroot]) {
+                ensure_resource('file', '/opt/ssl/', {
+                    ensure => 'directory',
+                    owner  => 'root',
+                    group  => 'www-data',
+                    mode   => '0644',
+                })
+            }
+
+            if (!defined(File["${sslroot}/${config_name}"])) {
+                file { "${sslroot}/${config_name}":
+                    ensure  => $ensure_directory,
+                    owner   => 'root',
+                    group   => 'www-data',
+                    mode    => '0644',
+                    require => File[$sslroot],
+                }
+            }
+
+            file { "${sslroot}/${config_name}/${name}.crt":
+                ensure  => $ensure,
                 owner   => 'root',
                 group   => 'www-data',
-                mode    => '2755',
-                require => File[$sslroot],
+                mode    => '0640',
+                source  => $ensure ? {
+                    present => $ssl_cert,
+                    absent  => undef,
+                },
+                content => $ensure ? {
+                    present => $ssl_cert_content,
+                    absent  => undef,
+                },
+                require => File["${sslroot}/${config_name}"],
+                notify  => Exec['nginx-reload'],
             }
-        }
 
-        file { "${sslroot}/${config_name}/${name}.crt":
-            ensure  => $ensure,
-            owner   => 'root',
-            group   => 'www-data',
-            mode    => '0770',
-            source  => $ensure ? {
-                present => $ssl_cert,
-                absent  => undef,
-            },
-            content => $ensure ? {
-                present => $ssl_cert_content,
-                absent  => undef,
-            },
-            require => File["${sslroot}/${config_name}"],
-            notify  => Exec['nginx-reload'],
-        }
+            file { "${sslroot}/${config_name}/${name}.key":
+                ensure  => $ensure,
+                owner   => 'root',
+                group   => 'www-data',
+                mode    => '0640',
+                source  => $ensure ? {
+                    present => $ssl_key,
+                    absent  => undef,
+                },
+                content => $ensure ? {
+                    present => $ssl_key_content,
+                    absent  => undef,
+                },
+                require => File["${sslroot}/${config_name}"],
+                notify  => Exec['nginx-reload'],
+            }
 
-        file { "${sslroot}/${config_name}/${name}.key":
-            ensure  => $ensure,
-            owner   => 'root',
-            group   => 'www-data',
-            mode    => '0770',
-            source  => $ensure ? {
-                present => $ssl_key,
-                absent  => undef,
-            },
-            content => $ensure ? {
-                present => $ssl_key_content,
-                absent  => undef,
-            },
-            require => File["${sslroot}/${config_name}"],
-            notify  => Exec['nginx-reload'],
+            $ssl_certificate = "${sslroot}/${config_name}/${name}.crt"
+            $ssl_certificate_key = "${sslroot}/${config_name}/${name}.key"
         }
     }
 
@@ -109,7 +133,7 @@ define nginx::site (
         file { "/etc/nginx/sites-enabled/${config_name}.conf":
             ensure  => $ensure_link,
             target  => "/etc/nginx/sites-available/${config_name}.conf",
-            require => [File["/etc/nginx/sites-available/${config_name}.conf"], File[$siteroot], File["${siteroot}/htdocs"], File["${siteroot}/logs"
+            require => [Concat["/etc/nginx/sites-available/${config_name}.conf"], File[$siteroot], File["${siteroot}/htdocs"], File["${siteroot}/logs"
                     ]],
             notify  => Exec['nginx-reload'],
         }
@@ -121,7 +145,7 @@ define nginx::site (
             ensure  => $ensure_directory,
             owner   => 'root',
             group   => 'www-data',
-            mode    => '2755',
+            mode    => '0664',
             require => Class['nginx'],
             force   => true,
         }
@@ -138,15 +162,23 @@ define nginx::site (
         }
     }
 
-    concat::fragment { "nginx_${config_name}_header for ${name}":
-        ensure  => $ensure,
-        target  => "/etc/nginx/sites-available/${config_name}.conf",
-        order   => "${name}-00",
-        content => template('nginx/vhost_header.erb'),
+
+    if versioncmp($::nginxversion, '1.15') > 0 {
+        concat::fragment { "nginx_${config_name}_header for ${name}":
+            target  => "/etc/nginx/sites-available/${config_name}.conf",
+            order   => "${name}-00",
+            content => template('nginx/vhost_header_v1.15.erb'),
+        }
+    } else {
+        concat::fragment { "nginx_${config_name}_header for ${name}":
+            target  => "/etc/nginx/sites-available/${config_name}.conf",
+            order   => "${name}-00",
+            content => template('nginx/vhost_header.erb'),
+        }
     }
 
+
     concat::fragment { "nginx_${config_name}_footer ${name}":
-        ensure  => $ensure,
         target  => "/etc/nginx/sites-available/${config_name}.conf",
         order   => "${name}-99",
         content => template('nginx/vhost_footer.erb'),
