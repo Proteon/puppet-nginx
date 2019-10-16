@@ -1,5 +1,7 @@
     
     location <%= @location %> {
+<% if @additional_config %>    <%= @additional_config %>
+<% end -%>
 <% if @options -%><% @options.each do |hash| -%><% hash.keys.each do |key| -%>
         <%= key %> <%= hash[key] %>;
 <% end -%><% end -%><% end -%>
