@@ -13,7 +13,7 @@ server {
     # ssllabs recommendation
     ssl_protocols <%= @ssl_protocols %>;
     ssl_prefer_server_ciphers on;
-    ssl_ciphers "TLS-CHACHA20-POLY1305-SHA256 TLS-AES-256-GCM-SHA384 TLS-AES-128-GCM-SHA256 EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH EDH+aRSA !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4";
+    ssl_ciphers  <% if @ssl_ciphers %><%= @ssl_ciphers %><% else %>"TLS-CHACHA20-POLY1305-SHA256 TLS-AES-256-GCM-SHA384 TLS-AES-128-GCM-SHA256 EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH EDH+aRSA !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4"<% end %>;
 
     # should support about 40K unique sessions in 10 min
     ssl_session_cache shared:SSL:10m;
