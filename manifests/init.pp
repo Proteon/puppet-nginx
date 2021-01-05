@@ -15,6 +15,8 @@ class nginx (
     $additional_main_config  = '',
     $version                 = held,
     $package                 = 'nginx', # may override with for instance 'nginx-extras' or 'nginx-light' 
+    $package_file            = undef,
+    $package_temp_file       = '/tmp/nginx.deb',
     $use_nginx_repository    = false,
 ) {
 
@@ -47,9 +49,27 @@ class nginx (
         default  => $version,
     }
 
-    package { $package:
-        name    => $package,
-        ensure  => $ensure,
+    if $package_file {
+        file { $package_temp_file:
+            owner   => root,
+            group   => root,
+            mode    => 644,
+            ensure  => present,
+            source  => $package_file,
+            require => undef,
+        }
+        package { $package:
+            name     => $package,
+            provider => dpkg,
+            ensure   => latest,
+            source   => $package_temp_file,
+            require => File[$package_temp_file],
+        }
+    } else {
+        package { $package:
+            name    => $package,
+            ensure  => $ensure,
+        }
     }
 
     # Logrotate
